@@ -1,34 +1,65 @@
-import React from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import logo from './React-icon.png'
+import styles from './ProductList.module.css'
+import { Link } from 'react-router-dom'
+import Title from './Title'
+import QuantityBtn from './QuantityBtn'
 
 
 export default function ProductList() {
 
-    let productList = [
-        {"id": 1, "name": "Apple", "price": 5, "image": "apple.jpg", "desc": "Apple 50g"},
-        {"id": 2, "name": "Orange", "price": 3, "image": "orange.jpg", "desc": "Orange 50g"},
-        {"id": 3, "name": "Mange", "price": 4, "image": "mange.jpg", "desc": "Mange 500g"},
-        {"id": 4, "name": "Watermelon", "price": 20, "image": "watermelon.jpg", "desc": "Watermelon 2kg"},
-        {"id": 5, "name": "Blueberry", "price": 10, "image": "blueberry.jpg", "desc": "Blueberry 50g"}
-    ];
+    let [productList, setProductList] = useState([]);
+    // let [input, setInput] = useState('');
+
+    useEffect(() => {
+        fetch('https://hoyinleung.github.io/demoapi/react-basic-product.json')
+            .then(response => response.json())
+            .then(data => setProductList(data));
+        console.log(productList);
+    }, []);
+
+    // let product = '水果';
+    // const [product,setProduct] = useState('水果');
+    // const handleClick = () => {
+    //     setProduct('react');
+    //     console.log(product);
+    // }
+
+    // const [showProduct, setShowProduct] = useState(true);
+
+    // console.log(productList);
+
+    // useEffect(() => {
+    //     console.log(input)
+    // }, [input]);
 
     return (
-        <div>
-            <h1>Please select the product</h1>
-            <div>
+        <>
+            {/* {showProduct && <button onClick={()=>{setShowProduct(false)}}>隱藏產品</button>}
+            {!showProduct && <button onClick={()=>{setShowProduct(true)}}>顯示產品</button>} */}
+            {/* <button onClick={()=>setProductList('change')}>change</button> */}
+            {/* <input type='text' onChange={e => setInput(e.target.value)}></input> */}
+            <Title mainTitle={"Please select the product"}></Title>
+            <div className="container">
                 {
-                    productList.map((product)=>{
+                    // showProduct && 
+                    productList.map((product) => {
                         return (
-                            <div key={product.id}>
-                                {product.name}<br/>
-                                {product.price}<br/>
-                                <img src={process.env.PUBLIC_URL + '/img/'+product.image} width='100' /><br/>
-                                {product.desc}<br/>
-                            </div>
+                            <React.Fragment key={product.id}>
+                                <div className="containerItem" >
+                                    <Link to={'/product/' + product.id} >
+                                        <img src={process.env.PUBLIC_URL + '/img/' + product.image} /><br />
+                                    </Link>
+                                    <div className="productName">
+                                        {product.name}  -  {product.price}元/件
+                                    </div>
+                                    <QuantityBtn productInfo={product} />
+                                </div>
+                            </React.Fragment>
                         )
                     })
                 }
             </div>
-        </div>
+        </>
     )
 }
